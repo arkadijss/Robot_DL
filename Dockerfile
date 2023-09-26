@@ -15,8 +15,16 @@ RUN groupadd --gid $USER_GID $USERNAME \
     && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
     && chmod 0440 /etc/sudoers.d/$USERNAME
 
-RUN apt-get update && apt-get install -y git
-RUN apt-get update && apt-get install -y python3-pip
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git \  
+    python3 \ 
+    python3-pip \
+    g++ \ 
+    libgl1 \ 
+    libglib2.0-0 \  
+    libsm6 \ 
+    libxext6 \ 
+    ros-$ROS_DISTRO-rviz
 
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
