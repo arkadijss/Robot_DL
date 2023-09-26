@@ -1,0 +1,11 @@
+version: '3'
+services:
+  ros-base:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    network_mode: host
+    mem_limit: 8g
+    volumes:
+      - ./:/workspace:cached
+    command: tail -f /dev/null  # A command that keeps the container running

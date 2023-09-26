@@ -1,0 +1,11 @@
+version: '3'
+services:
+  ros-base:
+    environment:
+      - DISPLAY=$DISPLAY
+      - LIBGL_ALWAYS_INDIRECT=1  # Required for indirect rendering
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    devices:
+      - /dev/dri:/dev/dri  # For GPU support (if applicable)
+    command: tail -f /dev/null  # A command that keeps the container running
