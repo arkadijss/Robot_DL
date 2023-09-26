@@ -1,9 +1,12 @@
 version: '3'
 services:
   ros-base:
+    runtime: nvidia
     environment:
       - DISPLAY=$DISPLAY
       - LIBGL_ALWAYS_INDIRECT=1  # Required for indirect rendering
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=all
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix
     devices:
