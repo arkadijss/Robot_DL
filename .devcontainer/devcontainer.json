@@ -7,7 +7,7 @@
   "dockerComposeFile": ["../docker-compose.yml", "docker-compose.extend.yml"],
   "service": "ros-base",
 
-  "workspaceFolder": "/workspace",
+  "workspaceFolder": "/home/uzer/catkin_ws",
   
   "shutdownAction": "stopCompose",
 
