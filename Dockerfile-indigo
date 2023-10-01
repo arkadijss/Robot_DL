@@ -1,0 +1,88 @@
+# Start from a base image of Ubuntu 14.04
+FROM nvidia/opengl:1.0-glvnd-runtime-ubuntu14.04
+
+ENV NVIDIA_DRIVER_CAPABILITIES ${NVIDIA_DRIVER_CAPABILITIES},display
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        mesa-utils && \
+    rm -rf /var/lib/apt/lists/*
+
+# Setup sources.list
+RUN echo "deb http://packages.ros.org/ros/ubuntu trusty main" > /etc/apt/sources.list.d/ros-latest.list
+
+# Setup keys
+RUN apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
+
+# Update the package repository and install the required packages
+RUN apt-get update && apt-get install -y \
+  ros-indigo-desktop-full \
+  ros-indigo-image-transport \
+  ros-indigo-image-transport-plugins \
+  ros-indigo-pcl-ros \
+  ros-indigo-libg2o
+
+ENV ROS_DISTRO indigo
+# Setup the environment variables to fix QT bug
+ENV QT_X11_NO_MITSHM 1
+
+ENV LANG C.UTF-8
+
+# NON ROOT USER ACCESS
+ARG USERNAME=uzer
+ARG USER_UID=1000
+ARG USER_GID=$USER_UID
+
+# Create the user
+RUN groupadd --gid $USER_GID $USERNAME \
+    && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME \
+    #
+    # [Optional] Add sudo support. Omit if you don't need to install software after connecting.
+    && apt-get update \
+    && apt-get install -y sudo \
+    && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
+    && chmod 0440 /etc/sudoers.d/$USERNAME
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git \  
+    python3 \ 
+    python3-pip \
+    g++ \
+    # replaced libgl1 \ 
+    libgl1-mesa-glx-lts-xenial \ 
+    libglib2.0-0 \  
+    libsm6 \ 
+    libxext6 \ 
+    net-tools
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ros-$ROS_DISTRO-moveit-ros-visualization
+
+# Pepper robot dependencies including base, moveit
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ros-$ROS_DISTRO-pepper-robot \
+    ros-$ROS_DISTRO-pepper-dcm-bringup \
+    ros-$ROS_DISTRO-pepper-moveit-config
+
+# depenedencies for gazebo
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ros-$ROS_DISTRO-gazebo-ros \
+    ros-$ROS_DISTRO-gazebo-ros-pkgs \
+    ros-$ROS_DISTRO-gazebo-ros-control \
+    ros-$ROS_DISTRO-effort-controllers \
+    ros-$ROS_DISTRO-joint-trajectory-controller
+
+USER $USERNAME
+
+# Pepper robot dependencies
+RUN mkdir -p /home/$USERNAME/catkin_ws/src && \
+    cd /home/$USERNAME/catkin_ws/src && \
+    # pepper robot for description rviz file
+    git clone https://github.com/ros-naoqi/pepper_robot.git && \
+    # virtual - control + gazebo
+    git clone https://github.com/ros-naoqi/pepper_virtual.git && \
+    # naoqi dcm driver
+    git clone https://github.com/ros-naoqi/naoqi_dcm_driver.git
+
+RUN cd /home/uzer/catkin_ws && /bin/bash -c "source /opt/ros/$ROS_DISTRO/setup.sh && catkin_make"
+
+RUN echo "source /opt/ros/$ROS_DISTRO/setup.sh" >> "/home/$USERNAME/.bashrc"
