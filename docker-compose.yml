@@ -1,6 +1,7 @@
 version: '3'
 services:
   ros-base:
+    image: pepper-noetic
     build:
       context: .
       dockerfile: Dockerfile
@@ -9,3 +10,10 @@ services:
     volumes:
       - ./:/workspace:cached
     command: tail -f /dev/null  # A command that keeps the container running
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]

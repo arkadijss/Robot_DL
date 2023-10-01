@@ -24,20 +24,37 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libglib2.0-0 \  
     libsm6 \ 
     libxext6 \ 
-    net-tools \
-    ros-$ROS_DISTRO-rviz
+    net-tools
 
-COPY requirements.txt requirements.txt
-RUN pip install -r requirements.txt
+RUN apt-get update && apt-get install -y \
+    ros-$ROS_DISTRO-rviz \
+    ros-$ROS_DISTRO-xacro \
+    ros-$ROS_DISTRO-moveit-ros-visualization 
+
+# Pepper gazebo dependencies
+RUN apt-get update && apt-get install -y \
+    ros-$ROS_DISTRO-gazebo-ros \ 
+    ros-$ROS_DISTRO-gazebo-ros-pkgs \
+    ros-$ROS_DISTRO-gazebo-ros-control \
+    ros-$ROS_DISTRO-effort-controllers \
+    ros-$ROS_DISTRO-joint-state-controller
 
 USER $USERNAME
 # Pepper robot dependencies
 RUN mkdir -p /home/$USERNAME/catkin_ws/src && \
     cd /home/$USERNAME/catkin_ws/src && \
+    # bridge
     git clone https://github.com/ros-naoqi/naoqi_driver.git && \
-    git clone https://github.com/ros-naoqi/pepper_meshes.git
+    # base - pepper_bringup, pepper_description, pepper_sensors
+    git clone https://github.com/ros-naoqi/pepper_robot.git && \
+    # virtual - control + gazebo
+    git clone https://github.com/ros-naoqi/pepper_virtual.git && \
+    # dcm bringup
+    git clone https://github.com/ros-naoqi/pepper_dcm_robot.git && \
+    # moveit for motion planning
+    git clone https://github.com/ros-naoqi/pepper_moveit_config.git
 
-
+    
 RUN cd /home/$USERNAME/catkin_ws/src && \
     rosdep update && \
     rosdep install -i -y --from-paths ./naoqi_driver
@@ -45,3 +62,6 @@ RUN cd /home/$USERNAME/catkin_ws/src && \
 RUN cd /home/uzer/catkin_ws && /bin/bash -c "source /opt/ros/$ROS_DISTRO/setup.sh && catkin_make"
 
 RUN echo "source /opt/ros/$ROS_DISTRO/setup.sh" >> "/home/$USERNAME/.bashrc"
+
+COPY requirements.txt requirements.txt
+RUN pip install -r requirements.txt
