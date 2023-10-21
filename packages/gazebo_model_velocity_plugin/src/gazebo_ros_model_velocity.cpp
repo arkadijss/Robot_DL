@@ -391,8 +391,8 @@ namespace gazebo
       double x_vel_cmd = cmd.linear.x * cos(yaw) + cmd.linear.y * sin(yaw);
       double y_vel_cmd = cmd.linear.x * sin(yaw) - cmd.linear.y * cos(yaw);
 
-      parent_->SetLinearVel(math::Vector3(x_vel_cmd, y_vel_cmd, 0.0));
-      parent_->SetAngularVel(math::Vector3(0.0, 0.0, cmd.angular.z));
+      parent_->SetLinearVel(ignition::math::Vector3(x_vel_cmd, y_vel_cmd, 0.0));
+      parent_->SetAngularVel(ignition::math::Vector3(0.0, 0.0, cmd.angular.z));
 
       output_vel_pub_.publish(cmd);
       last_velocity_update_time_ = tnow;
