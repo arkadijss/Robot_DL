@@ -47,6 +47,13 @@ RUN apt-get install -y \
     ros-$ROS_DISTRO-controller-manager \ 
     ros-$ROS_DISTRO-ddynamic-reconfigure-python
 
+# frietz
+RUN apt-get install -y \
+    ros-$ROS_DISTRO-gmapping \
+    ros-$ROS_DISTRO-map-server \
+    ros-$ROS_DISTRO-amcl \
+    ros-$ROS_DISTRO-move-base
+
 # meshes for viz
 RUN apt-get install -y ros-$ROS_DISTRO-pepper-meshes
 
@@ -61,7 +68,7 @@ RUN cd /home/$USERNAME/catkin_ws/src && \
     # base - pepper_bringup, pepper_description, pepper_sensors
     git clone -b correct_chain_model_and_gazebo_enabled https://github.com/awesomebytes/pepper_robot && \
     # virtual - control + gazebo
-    git clone -b simulation_that_works https://github.com/awesomebytes/pepper_virtual && \
+    git clone -b simulation_that_works https://github.com/frietz58/pepper_virtual.git && \
     # dcm bringup
     git clone https://github.com/ros-naoqi/pepper_dcm_robot.git && \
     # moveit for motion planning
