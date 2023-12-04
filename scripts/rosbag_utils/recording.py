@@ -31,7 +31,7 @@ class BagRecorder(BagManager):
 
 
 if __name__ == "__main__":
-    rospy.init_node("bag_recorder", anonymous=True)
+    rospy.init_node("bag_recorder")
 
     bag_path = "bagfile.bag"
     input_topics = topics
