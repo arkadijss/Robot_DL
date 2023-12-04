@@ -1,6 +1,7 @@
 import rospy
 from geometry_msgs.msg import Twist
 from pynput import keyboard
+from threading import Thread
 
 
 class Robot:
@@ -8,28 +9,32 @@ class Robot:
         self.velocity_publisher = rospy.Publisher(velocity_topic, Twist, queue_size=10)
         self.velocity = Twist()
 
-    def move_forward(self, speed=1.0, duration=1.0):
-        self.velocity.linear.x = speed
-        self.publish_velocity()
-        rospy.sleep(duration)
-        self.velocity.linear.x = 0.0
+    def accelerate(self, speed=0.25):
+        self.velocity.linear.x += speed
         self.publish_velocity()
 
-    def turn(self, angular_speed=1.0, duration=1.0):
-        self.velocity.angular.z = angular_speed
-        self.publish_velocity()
-        rospy.sleep(duration)
-        self.velocity.angular.z = 0.0
+    def decelerate(self, speed=0.25):
+        self.velocity.linear.x += -speed
         self.publish_velocity()
 
-    def turn_right(self, speed=1.0, duration=1.0):
-        self.turn(angular_speed=-speed, duration=duration)
+    def accelerate_rotation(self, angular_speed=0.25):
+        self.velocity.angular.z += angular_speed
+        self.publish_velocity()
 
-    def turn_left(self, speed=1.0, duration=1.0):
-        self.turn(angular_speed=speed, duration=duration)
+    def accelerate_clockwise(self, speed=0.25):
+        self.accelerate_rotation(angular_speed=-speed)
+
+    def accelerate_anticlockwise(self, speed=0.25):
+        self.accelerate_rotation(angular_speed=speed)
 
     def publish_velocity(self):
         self.velocity_publisher.publish(self.velocity)
+
+    def publish_velocity_continuously(self):
+        rate = rospy.Rate(10)
+        while not rospy.is_shutdown():
+            self.publish_velocity()
+            rate.sleep()
 
 
 class RobotController:
@@ -41,17 +46,24 @@ class RobotController:
         self.key_pressed = key.char
 
     def start(self):
+        self.robot_thread = Thread(target=self.robot.publish_velocity_continuously)
+        self.robot_thread.start()
+
         self.listener = keyboard.Listener(on_press=self.on_press)
         self.listener.start()
 
         while not rospy.is_shutdown():
             if self.key_pressed == "w":
-                self.robot.move_forward()
+                self.robot.accelerate()
+            elif self.key_pressed == "s":
+                self.robot.decelerate()
             elif self.key_pressed == "a":
-                self.robot.turn_left()
+                self.robot.accelerate_anticlockwise()
             elif self.key_pressed == "d":
-                self.robot.turn_right()
+                self.robot.accelerate_clockwise()
             self.key_pressed = None
+
+        self.robot_thread.join()
 
 
 if __name__ == "__main__":
