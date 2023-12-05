@@ -3,7 +3,7 @@ from geometry_msgs.msg import Twist
 
 
 class Robot:
-    def __init__(self, velocity_topic="/pepper/cmd_vel"):
+    def __init__(self, velocity_topic="/cmd_vel"):
         self.velocity_publisher = rospy.Publisher(velocity_topic, Twist, queue_size=10)
         self.velocity = Twist()
 

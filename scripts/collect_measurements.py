@@ -9,7 +9,7 @@ if __name__ == "__main__":
     rospy.init_node("collect_measurements")
 
     try:
-        bag_path = "bagfile.bag"
+        bag_path = "scripts/recordings/base.bag"
         bag_recorder = BagRecorder(bag_path, topics)
         bag_recorder.setup_subscribers()
 
