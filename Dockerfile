@@ -57,6 +57,9 @@ RUN apt-get install -y \
 # meshes for viz
 RUN apt-get install -y ros-$ROS_DISTRO-pepper-meshes
 
+# x terminal emulator for multiple bashes
+RUN apt-get install -y xterm
+
 USER $USERNAME
 
 # Pepper robot dependencies
