@@ -20,7 +20,7 @@ echo "Press Enter to save the map and exit slam_gmapping"
 read -p ""
 
 # Save the map using map_saver
-rosrun map_server map_saver -f results/gmapping/1.0.1/custom_0.cropped
+rosrun map_server map_saver -f results/gmapping/1.0.1_cropped/custom_0
 
 # Terminate the slam_gmapping process
 kill -INT $gmapping_pid
