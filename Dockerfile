@@ -79,7 +79,8 @@ RUN cd /home/$USERNAME/catkin_ws/src && \
 
 RUN cd /home/$USERNAME/catkin_ws/src && \
     rosdep update && \
-    rosdep install -i -y --from-paths ./naoqi_driver
+    rosdep install -i -y --from-paths ./naoqi_driver && \
+    rosdep install -i -y --from-paths ./pepper_mapping
 
 RUN cd /home/uzer/catkin_ws && /bin/bash -c "source /opt/ros/$ROS_DISTRO/setup.sh && catkin_make"
 
