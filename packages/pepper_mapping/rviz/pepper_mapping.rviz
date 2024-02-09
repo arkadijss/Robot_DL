@@ -89,7 +89,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/Image
       Enabled: true
-      Image Topic: /pepper_robot/naoqi_driver/camera/depth/image_raw
+      Image Topic: /naoqi_driver/camera/depth/image_raw
       Max Value: 1
       Median window: 5
       Min Value: 0
@@ -101,7 +101,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/Image
       Enabled: true
-      Image Topic: /pepper_robot/naoqi_driver/camera/front/image_raw
+      Image Topic: /naoqi_driver/camera/front/image_raw
       Max Value: 1
       Median window: 5
       Min Value: 0
