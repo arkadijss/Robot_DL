@@ -57,14 +57,21 @@ RUN apt-get install -y \
 # meshes for viz
 RUN apt-get install -y ros-$ROS_DISTRO-pepper-meshes
 
+# visualization
+RUN apt-get install -y ros-$ROS_DISTRO-rqt-image-view
+
 # x terminal emulator for multiple bashes
 RUN apt-get install -y xterm
+
+# create a symlink for python3 to python
+RUN ln -s /usr/bin/python3 /usr/bin/python
 
 USER $USERNAME
 
 # Pepper robot dependencies
 RUN mkdir -p /home/$USERNAME/catkin_ws/src
 COPY ./packages /home/$USERNAME/catkin_ws/src
+COPY ./src/perception /home/$USERNAME/catkin_ws/src/perception
 RUN cd /home/$USERNAME/catkin_ws/src && \
     # bridge
     git clone https://github.com/ros-naoqi/naoqi_driver.git && \
