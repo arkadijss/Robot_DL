@@ -5,3 +5,5 @@ checkpoints
 **.pth**
 **.pt**
 log
+.vscode
+!.vscode/launch.json

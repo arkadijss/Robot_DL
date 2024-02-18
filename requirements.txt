@@ -1,2 +1,4 @@
+torch
 opencv-python
 pynput
+torchvision
