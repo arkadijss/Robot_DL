@@ -2,3 +2,4 @@ torch
 opencv-python
 pynput
 torchvision
+qi
