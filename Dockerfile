@@ -94,5 +94,7 @@ RUN cd /home/uzer/catkin_ws && /bin/bash -c "source /opt/ros/$ROS_DISTRO/setup.s
 RUN echo "source /opt/ros/$ROS_DISTRO/setup.sh" >> "/home/$USERNAME/.bashrc"
 RUN echo "source /home/$USERNAME/catkin_ws/devel/setup.bash" >> "/home/$USERNAME/.bashrc"
 
+RUN pip install torch==2.2.1
+RUN pip install torchvision==0.17.1
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
