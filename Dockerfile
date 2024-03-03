@@ -70,8 +70,9 @@ USER $USERNAME
 
 # Pepper robot dependencies
 RUN mkdir -p /home/$USERNAME/catkin_ws/src
-COPY ./packages /home/$USERNAME/catkin_ws/src
+COPY ./src/external /home/$USERNAME/catkin_ws/src
 COPY ./src/perception /home/$USERNAME/catkin_ws/src/perception
+COPY ./src/mapping/pepper_mapping /home/$USERNAME/catkin_ws/src/pepper_mapping
 RUN cd /home/$USERNAME/catkin_ws/src && \
     # bridge
     git clone https://github.com/ros-naoqi/naoqi_driver.git && \
